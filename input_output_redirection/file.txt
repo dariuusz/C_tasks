@@ -1,0 +1,3 @@
+This file contains the random text which will be used
+for programming's purpose. An application will count 
+occurences of characters in this file.
