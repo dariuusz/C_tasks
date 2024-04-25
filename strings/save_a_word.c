@@ -1,5 +1,5 @@
 /* save_a_word.c    -   takes a user input and save it into an array. The function takes only one word and the rest 
-                        of the line leaves. It also skips any signs before a word */
+ 33                      of the line leaves. It also skips any signs before a word */
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -14,8 +14,10 @@ char * read( char *, int );
 void print_info();
 void clear_input_buffer();
 void print_found_info( char *, char );
-void print_found_info2( char *, char );
-bool validate_input( int, int * );
+void print_found_info2( char *, char * );
+bool validate_input( int *, int * );
+char * copy_like_strncpy( char * restrict, const char * restrict, size_t );
+void input_user_data( char * word, char *character );
 
 int main( void )
 {
@@ -25,6 +27,8 @@ int main( void )
     int option;
     bool valid_con, choice = true;    
     int result = 1;     /* assuming valid condition for while loop to start with*/
+
+
     /* write_word test*/
     // printf( "Enter a word you want to save: " );
     // write_word( word);
@@ -42,24 +46,21 @@ int main( void )
         print_info();
         result = scanf( "%d", &option );
 
-        if( validate_input( option, &result ))
+        if( !validate_input( &option, &result ))
             continue;
-        else
-            break;
-
-        clear_input_buffer();
-        puts( "Enter a word:" );
-        read( word, WORD );
-        puts( "Enter searched character:" );
-        scanf( " %c", &character );
        
         switch( option )
         {
             case 1:
+                input_user_data( word, &character );
                 print_found_info( word, character );
                 break;
             case 2:
-                print_found_info2( word, character );
+                input_user_data( word, &character );
+                print_found_info2( word, &character );
+                break;
+            case 3:
+                choice = false;
                 break;
             default:
                 choice = false;
@@ -71,33 +72,39 @@ int main( void )
     return 0;
 }
 
-bool validate_input( int option, int *result )
+void input_user_data( char *word, char *character )
 {
-    printf( "%d abd %d ", option, *result );
+    clear_input_buffer();
+    puts( "Enter a word:" );
+    read( word, WORD );
+    puts( "Enter searched character:" );
+    scanf( " %c", character );
+}
+
+bool validate_input( int *option, int *result )
+{
+    
     if( *result == 0 ||
-        ( option > 3 || 
-          option < 0 ))
+        ( *option > 3 || 
+          *option <= 0 ))
     {
         printf( "Incorrect input. Enter positive number from 1 to 3.\n" );
         clear_input_buffer();
         *result = 1;
-        return true;
+        return false;
     }
 
-    if( option == 3 )
-        *result = 0;
-        return false;
-
+    return true;    
 }
 
-void print_found_info2(char * word, char character )
+void print_found_info2(char * word, char * character )
 {
     /* Prints whether element has been found or not.
         @param word         a word
         @param character    a character
     */
     bool found;
-    found = element_in_array( word, &character );
+    found = element_in_array( word, character );
     if( found )
         printf( "Element has been found.\n" );
     else
@@ -128,7 +135,7 @@ void print_info()
 {
     /*Prints options */
     printf( "\n1 Test find_element function              2 Test element_in_array function \n" );
-    printf( "3 Exit \n" );
+    printf( "3 Test copy() function                      4 Exit \n" );
 }
 
 void write_word( char * array )
@@ -242,4 +249,17 @@ char *read( char *ch, int number )
     }
 
    return result;
+}
+
+char * copy_like_strncpy( char * restrict s1, const char* restrict s2, size_t n )
+{
+    size_t i = 0;
+
+    while( i++ < n )
+    {
+        s1[ i ] = s2[ i ];
+        if( s2[ i ] == '\0' )
+            s1[ i ] = '\0';
+    }
+    return s1;
 }
