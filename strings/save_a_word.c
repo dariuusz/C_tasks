@@ -4,7 +4,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
-#define WORD    40
+#define WORD            40
+#define TEST_CASES      4
 
 void write_word( char * );
 void write_word2( char *, int );
@@ -16,7 +17,7 @@ void clear_input_buffer();
 void print_found_info( char *, char );
 void print_found_info2( char *, char * );
 bool validate_input( int *, int * );
-char * copy_like_strncpy( char * restrict, const char * restrict, size_t );
+char * copy_str( char * restrict, const char * restrict, size_t );
 void input_user_data( char * word, char *character );
 
 int main( void )
@@ -60,6 +61,10 @@ int main( void )
                 print_found_info2( word, &character );
                 break;
             case 3:
+                copy_str( word2, "bread", 6 );
+                printf( "Result:    %s", word2 );
+                break;
+            case 4:
                 choice = false;
                 break;
             default:
@@ -74,6 +79,10 @@ int main( void )
 
 void input_user_data( char *word, char *character )
 {
+    /* Function to accept users data
+        @param      No
+        @return     Nothing
+    */
     clear_input_buffer();
     puts( "Enter a word:" );
     read( word, WORD );
@@ -83,9 +92,13 @@ void input_user_data( char *word, char *character )
 
 bool validate_input( int *option, int *result )
 {
-    
+    /* Function to validate users choice
+        @param  int         user's choice
+        @param  int         condition to terminate while loop
+        @return boolean     true or fale
+    */   
     if( *result == 0 ||
-        ( *option > 3 || 
+        ( *option > TEST_CASES || 
           *option <= 0 ))
     {
         printf( "Incorrect input. Enter positive number from 1 to 3.\n" );
@@ -100,8 +113,8 @@ bool validate_input( int *option, int *result )
 void print_found_info2(char * word, char * character )
 {
     /* Prints whether element has been found or not.
-        @param word         a word
-        @param character    a character
+        @param char[]         a word
+        @param char         a character
     */
     bool found;
     found = element_in_array( word, character );
@@ -114,8 +127,8 @@ void print_found_info2(char * word, char * character )
 void print_found_info( char * word, char character )
 {
     /* Prints a pointer and its address. Otherwise appropriate info
-        @param word         a word
-        @param character    a character
+        @param char[]         a word
+        @param char           a character
     */
     char * result;
     result = find_element( word, character );
@@ -126,7 +139,9 @@ void print_found_info( char * word, char character )
 }
 
 void clear_input_buffer() {
-    /* Clears input buffer*/
+    /* Clears input buffer
+        @return     Nothing
+    */
     int c;
     while (( c = getchar()) != '\n' && c != EOF );
 }
@@ -142,7 +157,7 @@ void write_word( char * array )
 {
     /*  Accept user input using getchar()
         Skip any whitespace characters.
-        @param  array   a word
+        @param  char[]   a word
     */
     int count = 0;
     char character;
@@ -167,8 +182,8 @@ void write_word2( char * array, int number )
 {
     /* Accept user input using getchar().
        Skip any whitespace characters and return word with the length of passed argument
-       @param array     a word
-       @param number    a length of the word 
+       @param char[]     a word
+       @param int        a length of the word 
     */
     int count = 0;
     char character;
@@ -192,9 +207,9 @@ void write_word2( char * array, int number )
 char * find_element( const char * word, char character )
 {
     /* Find an element in a word and return whether a pointer or NULL.
-        @param  word            a word
-        @param  character       searched character
-        @result                 A pointer or NULL
+        @param  char[]            a word
+        @param  char              searched character
+        @result char              A pointer or NULL
     */
     int count = 0;
 
@@ -210,9 +225,9 @@ char * find_element( const char * word, char character )
 bool element_in_array( char * character, const char * word )
 {
     /* Searching for an element in a word.
-        @param  charcter    searched character
-        @param  word        a word
-        @result             Returns TRUE or FALSE
+        @param  char        searched character
+        @param  char[]      a word
+        @result bool        Returns TRUE or FALSE
     */
     int count = 0;
 
@@ -229,9 +244,9 @@ char *read( char *ch, int number )
 {
     /* Reads user into and save it into an array.
        It uses fgets() function.
-       @param   ch      entered character
-       @param   number  the length of the array.
-       @result          Returns saved array
+       @param   char      entered character
+       @param   int       the length of the array.
+       @result  char      Returns saved array
     */
     char * result;
     int i = 0;
@@ -251,15 +266,27 @@ char *read( char *ch, int number )
    return result;
 }
 
-char * copy_like_strncpy( char * restrict s1, const char* restrict s2, size_t n )
+char * copy_str( char * restrict s1, const char* restrict s2, size_t n )
 {
+    /* Function copy_str works as strncpy(). It shortens s2 or adds '\0'. It can
+        not end with '\0'
+        @param char     targeted char
+        @param char     char to copy
+        @param size_t   number of chars 
+        @return char    s1
+    */
     size_t i = 0;
 
-    while( i++ < n )
+    while( i < n && s2[ i ] != '\0' )
     {
         s1[ i ] = s2[ i ];
-        if( s2[ i ] == '\0' )
-            s1[ i ] = '\0';
+        i++;
     }
+    while( i < n )
+    {
+        s1[ i ] = '\0';
+        i++;
+    }
+
     return s1;
 }
