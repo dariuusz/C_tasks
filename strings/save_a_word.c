@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <string.h>
 #define WORD            40
-#define TEST_CASES      4
+#define TEST_CASES      5
 
 void write_word( char * );
 void write_word2( char *, int );
@@ -16,9 +16,11 @@ void print_info();
 void clear_input_buffer();
 void print_found_info( char *, char );
 void print_found_info2( char *, char * );
+void print_found_info3( char *, char* );
 bool validate_input( int *, int * );
 char * copy_str( char * restrict, const char * restrict, size_t );
 void input_user_data( char * word, char *character );
+char * is_in( const char *, char * );
 
 int main( void )
 {
@@ -65,6 +67,10 @@ int main( void )
                 printf( "Result:    %s", word2 );
                 break;
             case 4:
+                input_user_data( word, word2 );
+                print_found_info3( word, word2 );
+                break;
+            case 5:
                 choice = false;
                 break;
             default:
@@ -87,9 +93,11 @@ void input_user_data( char *word, char *character )
     puts( "Enter a word:" );
     read( word, WORD );
     puts( "Enter searched character:" );
-    scanf( " %c", character );
+    if( sizeof( character) == 1 )
+        scanf( " %c", character );
+    else
+        read( character, WORD);
 }
-
 bool validate_input( int *option, int *result )
 {
     /* Function to validate users choice
@@ -138,6 +146,20 @@ void print_found_info( char * word, char character )
         printf( "Element returned is %c at address %p\n", *result, &result);
 }
 
+void print_found_info3( char * word, char * word2 )
+{
+    /* Prints a pointer and its address. Otherwise appropriate info
+        @param char[]         a word
+        @param char           a character
+    */
+    char * result;
+    result = is_in( word, word2 );
+    if( result == NULL )
+        printf( "Element has not been found.\n" );
+    else
+        printf( "Element returned is %s at address %p\n", result, &result);
+}
+
 void clear_input_buffer() {
     /* Clears input buffer
         @return     Nothing
@@ -149,8 +171,9 @@ void clear_input_buffer() {
 void print_info()
 {
     /*Prints options */
-    printf( "\n1 Test find_element function              2 Test element_in_array function \n" );
-    printf( "3 Test copy() function                      4 Exit \n" );
+    printf( "\n1 Test find_element function              2 Test element_in_array function" );
+    printf( "\n3 Test copy() function                    4 Test is_in() function" );
+    printf( "\n5 Exit\n" );
 }
 
 void write_word( char * array )
@@ -289,4 +312,33 @@ char * copy_str( char * restrict s1, const char* restrict s2, size_t n )
     }
 
     return s1;
+}
+
+char * is_in( const char * word, char * word2 )
+{
+    /* Function that uses pointer to iterate a word to look for whether the word2 is
+        in word. If all letters are found inside it returns pointer to the first letter
+        @param  word    targetted word
+        @param  word2   searched word
+        @return char    pointer or NULL
+     */
+    int count = 0;
+    while( *word != '\0' && *word2 != '\0' )
+    {
+        if( *word2 != *word )
+        {
+            *word++;
+            continue;
+        }
+        else
+        {
+            *word++;
+            *word2++;
+            count++;
+        }
+    }
+    if( *word == '\0' && *word2 == '\0' )
+        return ( char * ) (word -count);
+    else
+        return NULL;
 }
