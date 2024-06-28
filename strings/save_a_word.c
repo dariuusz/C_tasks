@@ -19,11 +19,11 @@ void print_found_info3( char *, char* );
 /* End of repeating functions */
 
 /* Switch cases */
-void print_case1( char *, char  );
-void print_case2( char *, char );
-void print_case3( char *, char * );
-void print_case4( char *, char * );
-void print_case5( char * );
+void print_case1( );
+void print_case2( );
+void print_case3( );
+void print_case4( );
+void print_case5( );
 /* End of switch cases */
 
 /* String manipulation functions */
@@ -38,11 +38,8 @@ char * read( char *, int );
 
 int main( void )
 {
-    char word[ WORD ];
-    char word2[ WORD ];
-    char character;
     int option;
-    bool valid_con, choice = true;    
+    bool choice = true;    
     int result = 1;     /* assuming valid condition for while loop to start with*/
     
     while( result && choice )
@@ -56,19 +53,19 @@ int main( void )
         switch( option )
         {
             case 1:
-                print_case1( word, character );
+                print_case1( );
                 break;
             case 2:
-                print_case2( word, character );
+                print_case2( );
                 break;
             case 3:
-                print_case3( word, word2 );
+                print_case3( );
                 break;
             case 4:
-                print_case4( word, word2 );
+                print_case4( );
                 break;
             case 5:
-                print_case5( word );
+                print_case5( );
                 break;
             case 6:
                 choice = false;
@@ -83,22 +80,28 @@ int main( void )
     return 0;
 }
 
-void print_case1( char * word, char character )
+void print_case1(  )
 {
+    char word[ WORD ];
+    char character;
     puts( "This function searches only for one character." );
     input_user_data( word, &character );
     print_found_info( word, character );
 }
 
-void print_case2( char * word, char character )
+void print_case2( )
 {
+    char word[ WORD ];
+    char character;
     puts( "This function searches for more than one character at any poin in source string." );
     input_user_data( word, &character );
     print_found_info2( word, &character );
 }
 
-void print_case3( char * word, char * word2 )
+void print_case3(  )
 {
+    char word[ WORD ];
+    char word2[ WORD ];
     clear_input_buffer();
     puts( "Enter a word to copy:" );
     read( word, WORD );
@@ -106,19 +109,23 @@ void print_case3( char * word, char * word2 )
     printf( "Result:    %s", word2 );
 }
 
-void print_case4( char *  word, char * word2 )
+void print_case4( )
 {
+    char word[ WORD ];
+    char word2[ WORD ];
     input_user_data( word, word2 );
     print_found_info3( word, word2 );
 }
 
-void print_case5( char * word )
+void print_case5(  )
 {
+    char word[ WORD ];
+    char * reversed_word;
     clear_input_buffer();
     puts( "Enter a word to reverse:" );
     read( word, WORD );
-    reverse_elements_of_array( word );
-    printf( "Reversed array : %s\n", word ); 
+    reversed_word = reverse_elements_of_array( word );
+    printf( "Reversed word : %s\n", reversed_word ); 
 }
 
 void input_user_data( char *word, char *character )
@@ -413,3 +420,4 @@ char * reverse_elements_of_array( char * array )
    }
    return array;
 }
+
