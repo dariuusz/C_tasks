@@ -4,8 +4,11 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+
 #define WORD            40
-#define TEST_CASES      6
+#define SENTENCE        100
+#define TEST_CASES      7
+#define LOOP_CONDITION  1
 
 /* Function used to print repeated information and clearing buffor*/
 void write_word( char * );
@@ -24,6 +27,7 @@ void print_case2( );
 void print_case3( );
 void print_case4( );
 void print_case5( );
+void print_case6( );
 /* End of switch cases */
 
 /* String manipulation functions */
@@ -34,13 +38,14 @@ char * reverse_elements_of_array( char * );
 char * find_element( const char *, char );
 bool element_in_array( char *, const char * );
 char * read( char *, int );
+char * remove_whitespaces( const char * , char * );
 /* End of string manipulation */
 
 int main( void )
 {
     int option;
     bool choice = true;    
-    int result = 1;     /* assuming valid condition for while loop to start with*/
+    int result = LOOP_CONDITION;     /* assuming valid condition for while loop to start with*/
     
     while( result && choice )
     {   
@@ -49,7 +54,7 @@ int main( void )
 
         if( !validate_input( &option, &result ))
             continue;
-       
+        
         switch( option )
         {
             case 1:
@@ -68,6 +73,9 @@ int main( void )
                 print_case5( );
                 break;
             case 6:
+                print_case6( );
+                break;
+            case 7:
                 choice = false;
                 break;
             default:
@@ -128,6 +136,19 @@ void print_case5(  )
     printf( "Reversed word : %s\n", reversed_word ); 
 }
 
+void print_case6( )
+{
+    char src_sentence[ SENTENCE ];
+    char target_sentence[ SENTENCE ];
+    char * result;
+    clear_input_buffer();
+    puts( "Enter a sentence: " );
+    read( src_sentence, SENTENCE );
+    result = remove_whitespaces( src_sentence, target_sentence );
+    printf( "This is the sentence with removed whitespaces: \n%s", result );
+
+}
+
 void input_user_data( char *word, char *character )
 {
     /* Function to accept users data
@@ -156,7 +177,7 @@ bool validate_input( int *option, int *result )
     {
         printf( "Incorrect input. Enter positive number from 1 to 3.\n" );
         clear_input_buffer();
-        *result = 1;
+        *result = LOOP_CONDITION;
         return false;
     }
 
@@ -220,7 +241,8 @@ void print_info()
     /*Prints options */
     printf( "\n1 Test find_element function              2 Test element_in_array function" );
     printf( "\n3 Test copy() function                    4 Test is_in() function" );
-    printf( "\n5 Reverse an array                        6 Exit\n" );
+    printf( "\n5 Reverse an array                        6 Test remove_whitespaces() function" );
+    printf( "\n7 Exit\n" );
 }
 
 void write_word( char * array )
@@ -330,13 +352,12 @@ char *read( char *ch, int number )
     
     if( result )
     {
-    while( ch[ i ] != '\n' && ch[ i ] != '\0' )
-            i++;
-        if( ch[ i ] == '\n' )
-            ch[ i ] = '\0';
-        else   
-            while( getchar() != '\n' )
-                continue;
+        while( ch[ i ] != '\n' && ch[ i ] != '\0' )
+                i++;
+            if( ch[ i ] == '\n' )
+                ch[ i ] = '\0';
+            else   
+                clear_input_buffer();
     }
 
    return result;
@@ -419,5 +440,25 @@ char * reverse_elements_of_array( char * array )
         back_index--;
    }
    return array;
+}
+
+char * remove_whitespaces( const char * sentence, char * target_sentence )
+{
+    /* Function accepts a sentence with white spaces and removes them, returning
+        one-word sentence
+        @param      const char     a source sentence with white spaces
+        @param      char           a target sentence   
+        @return     char           a sentence without white spaces
+    */
+   char * result = target_sentence;
+   while( *sentence != '\0' )
+   {
+        if( *sentence != ' ' && *sentence != '\t' && *sentence != '\n' && *sentence != '\r' )
+            *result++ = *sentence;
+        sentence++;
+   }
+
+   *result = '\0';
+   return target_sentence;
 }
 
