@@ -5,22 +5,36 @@
 #include <stdbool.h>
 #include <string.h>
 #define WORD            40
-#define TEST_CASES      5
+#define TEST_CASES      6
 
+/* Function used to print repeated information and clearing buffor*/
 void write_word( char * );
 void write_word2( char *, int );
-char * find_element( const char *, char );
-bool element_in_array( char *, const char * );
-char * read( char *, int );
+void input_user_data( char * word, char *character );
 void print_info();
 void clear_input_buffer();
 void print_found_info( char *, char );
 void print_found_info2( char *, char * );
 void print_found_info3( char *, char* );
+/* End of repeating functions */
+
+/* Switch cases */
+void print_case1( char *, char  );
+void print_case2( char *, char );
+void print_case3( char *, char * );
+void print_case4( char *, char * );
+void print_case5( char * );
+/* End of switch cases */
+
+/* String manipulation functions */
 bool validate_input( int *, int * );
 char * copy_str( char * restrict, const char * restrict, size_t );
-void input_user_data( char * word, char *character );
 char * is_in( const char *, char * );
+char * reverse_elements_of_array( char * );
+char * find_element( const char *, char );
+bool element_in_array( char *, const char * );
+char * read( char *, int );
+/* End of string manipulation */
 
 int main( void )
 {
@@ -30,19 +44,6 @@ int main( void )
     int option;
     bool valid_con, choice = true;    
     int result = 1;     /* assuming valid condition for while loop to start with*/
-
-
-    /* write_word test*/
-    // printf( "Enter a word you want to save: " );
-    // write_word( word);
-    // printf( "\nEntered characters are: \n%s", word );
-    // printf( "\n\n" );
-
-    /* write_word2 test*/
-    // printf( "Enter a second word you want to save: ");
-    // write_word2( word2, 5 );
-    // printf( "\nEntered characters are: \n%s", word2 );
-    
     
     while( result && choice )
     {   
@@ -55,22 +56,21 @@ int main( void )
         switch( option )
         {
             case 1:
-                input_user_data( word, &character );
-                print_found_info( word, character );
+                print_case1( word, character );
                 break;
             case 2:
-                input_user_data( word, &character );
-                print_found_info2( word, &character );
+                print_case2( word, character );
                 break;
             case 3:
-                copy_str( word2, "bread", 6 );
-                printf( "Result:    %s", word2 );
+                print_case3( word, word2 );
                 break;
             case 4:
-                input_user_data( word, word2 );
-                print_found_info3( word, word2 );
+                print_case4( word, word2 );
                 break;
             case 5:
+                print_case5( word );
+                break;
+            case 6:
                 choice = false;
                 break;
             default:
@@ -81,6 +81,44 @@ int main( void )
 
     printf( "Goodbye" );
     return 0;
+}
+
+void print_case1( char * word, char character )
+{
+    puts( "This function searches only for one character." );
+    input_user_data( word, &character );
+    print_found_info( word, character );
+}
+
+void print_case2( char * word, char character )
+{
+    puts( "This function searches for more than one character at any poin in source string." );
+    input_user_data( word, &character );
+    print_found_info2( word, &character );
+}
+
+void print_case3( char * word, char * word2 )
+{
+    clear_input_buffer();
+    puts( "Enter a word to copy:" );
+    read( word, WORD );
+    copy_str( word2, word, strlen( word ) + 1 );
+    printf( "Result:    %s", word2 );
+}
+
+void print_case4( char *  word, char * word2 )
+{
+    input_user_data( word, word2 );
+    print_found_info3( word, word2 );
+}
+
+void print_case5( char * word )
+{
+    clear_input_buffer();
+    puts( "Enter a word to reverse:" );
+    read( word, WORD );
+    reverse_elements_of_array( word );
+    printf( "Reversed array : %s\n", word ); 
 }
 
 void input_user_data( char *word, char *character )
@@ -120,7 +158,8 @@ bool validate_input( int *option, int *result )
 
 void print_found_info2(char * word, char * character )
 {
-    /* Prints whether element has been found or not.
+    /* Prints whether element has been found or not. Function searches for more than
+        one character in sourced string.
         @param char[]         a word
         @param char         a character
     */
@@ -134,7 +173,8 @@ void print_found_info2(char * word, char * character )
 
 void print_found_info( char * word, char character )
 {
-    /* Prints a pointer and its address. Otherwise appropriate info
+    /* Prints a pointer and its address. Otherwise appropriate info. This function searches only for
+        one character in source string.
         @param char[]         a word
         @param char           a character
     */
@@ -173,7 +213,7 @@ void print_info()
     /*Prints options */
     printf( "\n1 Test find_element function              2 Test element_in_array function" );
     printf( "\n3 Test copy() function                    4 Test is_in() function" );
-    printf( "\n5 Exit\n" );
+    printf( "\n5 Reverse an array                        6 Exit\n" );
 }
 
 void write_word( char * array )
@@ -252,20 +292,26 @@ bool element_in_array( char * character, const char * word )
         @param  char[]      a word
         @result bool        Returns TRUE or FALSE
     */
-    int count = 0;
+    int i = 0, j;
 
-    while(word[ count ] != '\n' && word[ count ] != '\0' )
+    while (character[ i ] != '\0') 
     {
-        if( word[ count ] == *character )
-            return true;
-        count++;
+        j = 0;
+        while ( word[ j ] != '\n' && word[ j ] != '\0') {
+            if ( word[ j ] == character[ i ]) 
+            {
+                return true;
+            }
+            j++;
+        }
+        i++;
     }
     return false;
 }
 
 char *read( char *ch, int number )
 {
-    /* Reads user into and save it into an array.
+    /* Reads user input and save it into an array.
        It uses fgets() function.
        @param   char      entered character
        @param   int       the length of the array.
@@ -317,28 +363,53 @@ char * copy_str( char * restrict s1, const char* restrict s2, size_t n )
 char * is_in( const char * word, char * word2 )
 {
     /* Function that uses pointer to iterate a word to look for whether the word2 is
-        in word. If all letters are found inside it returns pointer to the first letter
+        in word. If adjacent letters are found inside targetted array, it returns pointer to the first letter
         @param  word    targetted word
         @param  word2   searched word
         @return char    pointer or NULL
      */
-    int count = 0;
-    while( *word != '\0' && *word2 != '\0' )
+    const char *start = word;
+    const char *w2 = word2;
+
+    while ( *word ) 
     {
-        if( *word2 != *word )
+        // Check if word2 matches word starting at the current position
+        while ( *word && *w2 && ( *word == *w2 )) 
         {
-            *word++;
-            continue;
+            word++;
+            w2++;
         }
-        else
-        {
-            *word++;
-            *word2++;
-            count++;
-        }
+        // If we reached the end of word2, we found a match
+        if ( *w2 == '\0' ) 
+            return ( char * )( word - ( w2 - word2 ));
+
+        // Reset word to the next character after the starting character
+        word = start + 1;
+        start = word;
     }
-    if( *word == '\0' && *word2 == '\0' )
-        return ( char * ) (word -count);
-    else
-        return NULL;
+
+    return NULL;
+}
+
+char * reverse_elements_of_array( char * array )
+{
+    /* Function that reverse elements of an array and save them into the same array.
+        @param array        targetted array
+        @return array       targetted array
+    */
+   char temp;
+   int index = 0;
+   int length = strlen( array );
+   int back_index = length - 1;
+
+
+   while( index < back_index )
+   {    
+        temp = array[ index ];
+        array[ index ] = array[ back_index ];
+        array[ back_index ] = temp;
+        index++;
+        back_index--;
+   }
+   return array;
 }
