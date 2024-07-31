@@ -12,55 +12,59 @@
 #define EXIT_STATUS         5
 
 /* Functions to clear buffer and display information*/
-void clear_input_buffer();
-void sortstr( char *[], int );
-void print_array_content( char *[], int );
-void print_info();
+void ClearInputBuffer();
+void SortStr( char *[], int );
+void PrintArrayContent( char *[], int );
+void PrintInfo();
+void SortStrByLength( char *[], int );
+void SortStrByFirstWord( char *[], int );
 
-char * read_input( char *, int );
-bool validate_input( int *, int * );
+char * ReadInput( char *, int );
+bool ValidateInput( int *, int * );
+size_t FirstWordLength( const char * );
 
 int main( void )
 {
     char sentences [ NUM_OF_LITERALS ][ LETTERS ];
-    char *poin[ NUM_OF_LITERALS ];
+    char *ptr[ NUM_OF_LITERALS ];
     int count = 0;
-    int k;
     bool loop_condition = true;
     int result = LOOP_CONDITION;
     int option;
 
     printf( "Enter to 10 literals: \n" );
     while( count < NUM_OF_LITERALS && 
-            read_input( sentences[ count ], LETTERS ) != NULL &&
+            ReadInput( sentences[ count ], LETTERS ) != NULL &&
             sentences[ count ][ 0 ] != '\0' )
     {
-        poin[ count ] = sentences[ count ];
+        ptr[ count ] = sentences[ count ];
         count++;        
     }
+
     while( loop_condition )
     {
-        print_info();
+        PrintInfo();
         result = scanf( "%d", &option );
 
-        if( !validate_input( &option, &result ))
+        if( !ValidateInput( &option, &result ))
             continue;
 
         switch( option )
         {
             case 1:
-                print_array_content( poin, count );
+                PrintArrayContent( ptr, count );
                 break;
             case 2:
-                sortstr( poin, count );
-                print_array_content( poin, count );
+                SortStr( ptr, count );
+                PrintArrayContent( ptr, count );
                 break;
             case 3:
+                SortStrByLength( ptr, count );
+                PrintArrayContent( ptr, count );
                 break;
             case 4:
-                break;
-            case 5:
-                loop_condition = false;
+                SortStrByFirstWord( ptr, count );
+                PrintArrayContent( ptr, count );
                 break;
             default:
                 loop_condition = false;
@@ -69,13 +73,15 @@ int main( void )
 
     }
 
-    sortstr( poin, count );
-    print_array_content( poin, count );
+    SortStr( ptr, count );
+    PrintArrayContent( ptr, count );
     return 0;
 
 }
 
-void print_info()
+void 
+
+void PrintInfo()
 {
     /*
         Prints options 
@@ -85,7 +91,7 @@ void print_info()
     printf( "\n5 Exit\n" );
 }
 
-void print_array_content( char * array[], int count )
+void PrintArrayContent( char * array[], int count )
 {
     /*
         Function used to print the content of the array.
@@ -103,7 +109,7 @@ void print_array_content( char * array[], int count )
     }
 }
 
-void clear_input_buffer()
+void ClearInputBuffer()
 {
     /* 
         Clears input buffer
@@ -113,7 +119,7 @@ void clear_input_buffer()
    while(( c = getchar()) != '\n' && c != EOF );
 }
 
-char * read_input( char * ch, int number )
+char * ReadInput( char * ch, int number )
 {
     /* 
         Reads user input and save it into an array.
@@ -133,12 +139,12 @@ char * read_input( char * ch, int number )
         if( ch[ i ] == '\n' )
             ch[ i ] = '\0';
         else
-            clear_input_buffer();   
+            ClearInputBuffer();   
     }
     return result;
 }
 
-void sortstr( char *arrays[], int num )
+void SortStr( char *arrays[], int num )
 {
     /*
         Function used to sort an array in ascending order using a bubble sort algorithm.
@@ -159,7 +165,74 @@ void sortstr( char *arrays[], int num )
             }
 }
 
-bool validate_input( int *option, int *result )
+void SortStrByLength( char *arrays[], int num )
+{
+    /* Sorts an array in ascending order using Bubble Sort
+        @param  char        an array
+        @param  int         a number of string literals
+        @return             nothing  
+    */
+    char *temp;
+    for( int i = 0; i < num; i++ )
+    {
+        for( int j = 0; j < num - i - 1; j++ )
+        {
+            if( strlen( arrays[ j ]) > strlen( arrays[ j + 1 ]))
+            {
+                temp = arrays[ j ];
+                arrays[ j ] = arrays[ j + 1 ];
+                arrays[ j + 1 ] = temp;
+            }
+        }
+    }
+        
+}
+
+size_t FirstWordLength( const char *str )
+{
+    /* Calculates the number of character in a first word
+        @param char         a word
+        @return size_t      a length of the first word
+    */
+    size_t len = 0;
+
+    // Skip leading spaces
+    while (str[ len ] == ' ')
+        len++;
+
+
+    // Now, count the length of the first word
+    size_t start = len;
+    while ( str[ len ] != '\0' && str[ len ] != ' ') 
+        len++;
+
+
+    return len - start;
+}
+
+void SortStrByFirstWord( char *arrays[], int num )
+{
+    /* Sorts by the length of the first word in a string literal.
+        @param char         an array
+        @param int          a number of string literals
+        @return             nothing
+    */
+    char * temp;
+    for( int i = 0; i < num - 1; i++ )
+    {
+        for( int j = 0; j < num - i - 1; j++ )
+        {
+            if( FirstWordLength( arrays[ j ]) > FirstWordLength( arrays[ j + 1 ]))
+            {
+                temp = arrays[ j ];
+                arrays[ j ] = arrays[ j + 1 ];
+                arrays[ j + 1 ] = temp;
+            }
+        }
+    }
+}
+
+bool ValidateInput( int *option, int *result )
 {
     /* Function to validate users choice
         @param  int         user's choice
@@ -171,7 +244,7 @@ bool validate_input( int *option, int *result )
           *option <= 0 ))
     {
         printf( "Incorrect input. Enter positive number from 1 to 3.\n" );
-        clear_input_buffer();
+        ClearInputBuffer();
         *result = LOOP_CONDITION;
         return false;
     }
