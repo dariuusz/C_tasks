@@ -1,0 +1,1 @@
+Here is the seconf file file4b.txt that is added as the second one by retrieving from the command arguments.

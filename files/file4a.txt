@@ -1,0 +1,2 @@
+This is the source file where the content of the rest files will be added.
+Here is the seconf file file4b.txt that is added as the second one by retrieving from the command arguments.
