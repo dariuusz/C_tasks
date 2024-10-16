@@ -1,0 +1,1 @@
+This is a file for compress_file.c program to reduce its content by two thirds.
